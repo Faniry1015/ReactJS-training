@@ -1,14 +1,6 @@
-const scaleNames = {
-    c: "Celcius",
+const scale = {
+    c: "Celsius",
     f: "Fahrenheit"
-}
-
-function toFahrenheit(celsius) {
-    return celsius * (9/5) + 32
-}
-
-function toCelsius (fahrenheit) {
-    return (fahrenheit - 32) * 5/9
 }
 
 function tryConvert(temperature, convert) {
@@ -16,7 +8,22 @@ function tryConvert(temperature, convert) {
     if (Number.isNaN(value)) {
         return ""
     }
-    return (Math.round(convert((value) * 100) / 100).toString())
+    return Math.round(convert((value *100) / 100))
+}
+
+function BoilingVerdict({ celsius }) {
+    if (celsius >= 100) {
+        return <div className="alert alert-success">L'eau est bouillante</div>
+    }
+    return <div className="alert alert-info">L'eau ne boue PAS</div>
+}
+
+function toCelsius(fahrenheit) {
+    return (fahrenheit - 32) * 5/9
+}
+
+function toFahrenheit(celsius) {
+    return (celsius * 9/5) + 32
 }
 
 class TemperatureInput extends React.Component {
@@ -31,66 +38,58 @@ class TemperatureInput extends React.Component {
     }
 
     render() {
-        const scaleName = scaleNames[this.props.scale]
-        const name = "scale" + scaleName
         const {temperature} = this.props
+        const scaleName = scale[this.props.scale]
+        const name = "scale-" + scaleName
         return <div className="form-group">
-            <label className="form-text" htmlFor={name}>Température en {scaleName} :</label>
-            <input type="text" className="form-control" id={name} value={temperature} onChange={this.handleChange}/>
+            <label className="form-text" htmlFor={name}>Température en degré {scaleName} : </label>
+            <input className="form-control" type="text" id={name} value={temperature} onChange={this.handleChange} />
         </div>
     }
-
 }
 
-function BoilingVerdict({ celsius }) {
-    if (celsius >= 100) {
-        return <div className="alert alert-success">L'eau est bouillante</div>
-    }
-    return <div className="alert alert-info">L'eau n'est pas bouillante</div>
-}
-
-
-
-class Thermomètre extends React.Component {
+class Calculator extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = { 
             scale: "c",
-            temperature: 20 }
-        this.handleCelsiusChange = this.handleCelsiusChange.bind(this)
-        this.handleFahrennheitChange = this.handleFahrennheitChange.bind(this)
+            temperature: "" }
+        this.handleChange = this.handleChange.bind(this)
+        this.handleCelsiusChange =  this.handleCelsiusChange.bind(this)
+        this.handleFahrenheitChange =  this.handleFahrenheitChange.bind(this)
+    }
+
+    handleChange(e) {
+        this.setState({ temperature: e.target.value })
     }
 
     handleCelsiusChange(temperature) {
         this.setState({
             scale: "c",
-            temperature
-        })
+            temperature})
     }
 
-    handleFahrennheitChange(temperature) {
+    handleFahrenheitChange(temperature) {
         this.setState({
             scale: "f",
-            temperature
-        })
+            temperature})
     }
 
-
     render() {
-        const {temperature, scale} = this.state
+        const { temperature, scale } = this.state
         const celsius = scale === "c" ? temperature : tryConvert(temperature, toCelsius)
-        const fahrenheit = scale ==="f" ? temperature : tryConvert(temperature, toFahrenheit)
-        return <form className="container mt-4">
-            <h1>Etat d'ébulition de l'eau</h1>
-            <TemperatureInput scale="c" temperature={celsius} onTemperatureChange={this.handleCelsiusChange}/>
-            <TemperatureInput scale="f" temperature={fahrenheit} onTemperatureChange={this.handleFahrennheitChange} />
+        const fahrenheit = scale === "f" ? temperature : tryConvert(temperature, toFahrenheit)
+        return <div className="container mt-4">
+            <TemperatureInput scale="c" temperature={celsius} onTemperatureChange={this.handleCelsiusChange} />
+            <TemperatureInput scale="f" temperature={fahrenheit} onTemperatureChange={this.handleFahrenheitChange} />
             <hr />
             <BoilingVerdict celsius={celsius} />
             {JSON.stringify(this.state)}
-        </form>
+        </div>
     }
+
 }
 
 const root = ReactDOM.createRoot(document.querySelector("#app"))
-root.render(<Thermomètre />)
+root.render(<Calculator />)
