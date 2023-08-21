@@ -26,7 +26,19 @@ class SearchBar extends React.Component {
 }
 
 class ProductTable extends React.Component {
+
+    category() {
+        for (const product of PRODUCTS) {
+            if (product.category) {
+                return
+            }
+            const newCategory = <ProductCategoryRow category={product.category} />
+            newCategory.append(document.querySelector("tbody"))
+        }
+    }
+
     render() {
+        this.category()
         return <table >
             <thead>
                 <tr>
