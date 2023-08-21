@@ -11,7 +11,7 @@ class FilterableProductTable extends React.Component {
     render() {
         return <div>
             <div><SearchBar /></div>
-            <div></div>
+            <div><ProductTable /></div>
         </div>
     }
 }
@@ -19,8 +19,58 @@ class FilterableProductTable extends React.Component {
 class SearchBar extends React.Component {
     render() {
         return <div>
-            <input type="text" placeholder="Search..."/>
+            <input type="text" placeholder="Search..." />
             <input name="checkbox" type="checkbox" /> <label htmlFor="checkbox">Only show products in stock</label>
         </div>
     }
 }
+
+class ProductTable extends React.Component {
+    render() {
+        return <table >
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ProductCategoryRow category = "Category 1" />
+                <ProductRow product="Product1" price="price1"/>
+
+                <ProductCategoryRow category = "Category 2" />
+                <ProductRow product="Product1" price="price1"/>
+            </tbody>
+        </table>
+    }
+}
+
+class ProductCategoryRow extends React.Component {
+
+    constructor(props) {
+        super(props)
+    }
+
+    render() {
+        return <tr>
+            <td>{this.props.category}</td>
+        </tr>
+    }
+}
+
+class ProductRow extends React.Component {
+
+    constructor (props) {
+        super(props)
+    }
+
+    render() {
+        return <tr>
+        <td>{this.props.product}</td>
+        <td>{this.props.price}</td>
+    </tr>
+    }
+}
+
+const root = ReactDOM.createRoot(document.querySelector("#app"))
+root.render(<FilterableProductTable />)
