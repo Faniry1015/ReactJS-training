@@ -27,18 +27,16 @@ class SearchBar extends React.Component {
 
 class ProductTable extends React.Component {
 
-    category() {
-        for (const product of PRODUCTS) {
-            if (product.category) {
-                return
-            }
-            const newCategory = <ProductCategoryRow category={product.category} />
-            newCategory.append(document.querySelector("tbody"))
-        }
-    }
-
     render() {
-        this.category()
+        const categories = []
+        for (const product of PRODUCTS) {
+            const newcategory = product.category
+            if (!categories.includes(newcategory)) {
+                categories.push(newcategory)
+            }
+        }
+        const categoriesComponent = categories.map((category) => <ProductCategoryRow key={category} category={category} />)
+
         return <table >
             <thead>
                 <tr>
@@ -47,11 +45,7 @@ class ProductTable extends React.Component {
                 </tr>
             </thead>
             <tbody>
-                <ProductCategoryRow category = "Category 1" />
-                <ProductRow product="Product1" price="price1"/>
-
-                <ProductCategoryRow category = "Category 2" />
-                <ProductRow product="Product1" price="price1"/>
+                {categoriesComponent}
             </tbody>
         </table>
     }
@@ -64,23 +58,36 @@ class ProductCategoryRow extends React.Component {
     }
 
     render() {
-        return <tr>
-            <td>{this.props.category}</td>
-        </tr>
+        const products = []
+        for (const product of PRODUCTS) {
+            if (this.props.category === product.category) {
+                products.push(product)
+            }
+        }
+
+        const productsComponent = products.map((product) => <ProductRow key={PRODUCTS.indexOf(product)} product={product.name} price={product.price} category={product.category} stocked={product.stocked} />)
+
+        return <React.Fragment>
+            <tr>
+                <td>{this.props.category}</td>
+            </tr>
+            {productsComponent}
+        </React.Fragment>
+
     }
 }
 
 class ProductRow extends React.Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props)
     }
 
     render() {
         return <tr>
-        <td>{this.props.product}</td>
-        <td>{this.props.price}</td>
-    </tr>
+            <td>{this.props.product}</td>
+            <td>{this.props.price}</td>
+        </tr>
     }
 }
 
