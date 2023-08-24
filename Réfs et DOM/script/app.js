@@ -4,6 +4,7 @@
 //   return <input className="form-control" type="text" ref={ref} />
 // })
 
+//Envoi informations vers parent en utilisant class sur l'enfant
 class FieldToForward extends React.Component {
   render() {
     return (
