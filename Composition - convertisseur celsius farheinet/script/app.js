@@ -6,7 +6,7 @@ function Column2({left, right}) {
     </div>
 }
 
-/**Comosition avec button */
+/**Composition avec button */
 
 
 function Button({type, children}) {
