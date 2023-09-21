@@ -2,12 +2,14 @@ function Form() {
     const data = React.useRef(null)
     const increment = React.useRef({count: 0})
 
+    //Utilisation pratique
     const handleClick = function(e) {
         e.preventDefault()
         console.log(data.current)
         console.log(data.current.value) 
     }
 
+    // Peut aussi faire
     const handleClick2 = function(e) {
         e.preventDefault()
         console.log(increment.current)
