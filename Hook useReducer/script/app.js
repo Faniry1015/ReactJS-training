@@ -5,7 +5,7 @@ function init(initialValue) {
 function reducer(state, action) {
    switch(action.type) {
       case "increment" : 
-         return {count: state.count + 1}
+         return {count: state.count + action.payload || 1}
       case "decrement" : 
          if (state <= 0) {
             return state
@@ -27,6 +27,7 @@ function Incrementer() {
       <h1>Chiffre à modifier : {count.count}</h1>
       <button onClick={() => dispatch({type: "decrement"})}>Décrementer</button>
       <button onClick={() => dispatch({type: "increment"})}>Incrémenter</button>
+      <button onClick={() => dispatch({type: "increment", payload: 10})}>Incrémenter + 10</button>
       <button onClick={() => dispatch({type: "reinit"})}>Réinitialiser</button>
    </div>
 }
