@@ -1,15 +1,36 @@
-const MyFormContext = React.createContext({ })
+const FormContext = React.createContext({})
 
-function FormContext({ children, defaultValue, onSubmit }) {
-   const { name, firstname } = React.useContext(MyFormContext)
-   return <form onSubmit={onSubmit}>{children}</form>
+function FormWithContext({ children, defaultValue, onSubmit }) {
+   const [data, setData] = React.useState(defaultValue)
+   const change = React.useCallback(function(name,value) {
+         setData(d => ({...d, [name]: value}))
+   }) 
+   const value = React.useMemo(function () {
+      return {...data, change}
+   }, [data, change])
+
+   const handleSubmit = React.useCallback(function(e) {
+      e.preventDefault()
+      onSubmit(value)
+   }, [onSubmit, value])
+
+   return <FormContext.Provider value={value}>
+      <form onSubmit={handleSubmit}>
+         {children}
+      </form>
+      {JSON.stringify(value)}
+   </FormContext.Provider>
+
 }
 
 function FormField({ name, children }) {
-   // const {name} = React.useContext(MyContext)
+   const data = React.useContext(FormContext)
+   const handleChange = React.useCallback(function(e) {
+      data.change(e.target.name, e.target.value)
+   }, [data.change])
    return <div className="form-group mb-3">
       <label htmlFor={name} className="form-label">{children}</label>
-      <input name={name} type="text" className="form-control"></input>
+      <input name={name} type="text" className="form-control" value={data[name] || ""} onChange={handleChange}></input>
    </div>
 }
 
@@ -24,18 +45,15 @@ function App() {
    }, [])
 
    return <div className="container">
-      <MyContext.Provider value={ }>
-         <FormContext defaultValue={{ name: "Doe", firstname: "John" }} onSubmit={handleSubmit}>
-            <FormField name="name">Nom</FormField>
-            <FormField name="firstname">Prénom</FormField>
-            <PrimaryButton>Envoyer</PrimaryButton>
-         </FormContext>
-      </MyContext.Provider>
+      <FormWithContext defaultValue={{ name: "Doe", firstname: "John" }} onSubmit={handleSubmit}>
+         <FormField name="name">Nom</FormField>
+         <FormField name="firstname">Prénom</FormField>
+         <PrimaryButton>Envoyer</PrimaryButton>
+      </FormWithContext>
 
    </div>
 
 }
-console.log(MyContext)
 
 const root = ReactDOM.createRoot(document.querySelector("#app"));
 root.render(<App />);
