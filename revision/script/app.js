@@ -1,43 +1,42 @@
-const THEMES = {
-    dark: {
-        background: '#000',
-        color: '#fff'
-    },
-    light: {
-        background: '#fff',
-        color: '#000'
-    }
+const FormContext = React.createContext({})
+
+function Form({ defaultValue, onSubmit, children }) {
+
+    return <FormContext.Provider value={defaultValue}>
+        <form onSubmit={onSubmit}>
+            {children}
+        </form>
+    </FormContext.Provider>
 }
 
-const ThemeContext = React.createContext({
-    theme: THEMES,
-    toggleTheme: () => {}
-})
+function FormField({ name, children }) {
+    const data = React.useContext(FormContext)
+
+    return <React.Fragment>
+        <label htmlFor={name}>{children}</label>
+        <input type="text" name={name} id={name} defaultValue={data[name]}/>
+    </React.Fragment>
+}
+
+function PrimaryButton({ children }) {
+    return <button type="submit">{children}</button>
+}
 
 function App() {
-    const [theme, setTheme] = React.useState('dark')
 
-    const toggleTheme = React.useCallback(() => {
-        setTheme(theme === 'dark' ? 'light' : 'dark')
-    }, [theme]) 
+    const handleSubmit = React.useCallback(
+        (value) => {
+            value.preventDefault()
+            console.log(value.target)
+        },
+        [],
+    )
 
-    const currentTheme = theme === 'dark' ? THEMES.dark : THEMES.light
-
-    return <div>
-        <ThemeContext.Provider value={currentTheme}>
-            <input type="text" name="nom" id="nom" />
-            <ThemedButton>Rechercher</ThemedButton> <br />
-            <ThemedButton type="submit">Submit</ThemedButton>
-            <button onClick={toggleTheme}>Changer theme</button>
-        </ThemeContext.Provider>
-    </div>
+    return <Form defaultValue={{ name: 'Doe', firstname: 'John' }} onSubmit={handleSubmit} >
+        <FormField name='name'>Nom</FormField>
+        <FormField name='firstname'>Prénom</FormField>
+        <PrimaryButton>Envoyer</PrimaryButton>
+    </Form>
 }
-
-
-function ThemedButton({ children }) {
-    const value = React.useContext(ThemeContext)
-    return <button style={value}>{children}</button>
-}
-
 
 ReactDOM.createRoot(document.querySelector('#app')).render(<App />)
