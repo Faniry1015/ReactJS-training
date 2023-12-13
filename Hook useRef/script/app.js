@@ -6,7 +6,7 @@ function Form() {
    //Utilisation pratique
    const handleClick = function (e) {
       e.preventDefault();
-      const data = {nom : nom.current.value, prénom: prenom.current.value}
+      const data = {Nom : nom.current.value, Prénom: prenom.current.value}
       console.log(data)
 
    };

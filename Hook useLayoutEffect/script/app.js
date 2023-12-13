@@ -6,7 +6,7 @@ function Incrementer() {
       function () {
          setCount((c) => c + 1);
       },
-      []
+      [count]
    );
 
    React.useLayoutEffect(function () {

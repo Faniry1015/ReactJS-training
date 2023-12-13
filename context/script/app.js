@@ -1,4 +1,4 @@
-const theme = {
+const THEMES = {
    dark: {
       backgroundColor: "black",
       color: "white",
@@ -9,7 +9,11 @@ const theme = {
    },
 };
 
-const ThemeContext = React.createContext(theme.dark);
+// Si on envoie la fonction toggle également en plus du CSS du thème
+const ThemeContext = React.createContext({
+   theme: THEMES.black,
+   ToggleTheme: () => {},
+});
 
 /*
 Syntaxe de base
@@ -24,22 +28,32 @@ function BtnThem({ children }) {
 }*/
 
 // Meilleure synthaxe
-function BtnThem({children}) {
-   const value = React.useContext(ThemeContext)
-   return <button style={value}>{children}</button>
+function BtnThem({ children }) {
+   const { theme } = React.useContext(ThemeContext);
+   return <button style={theme}>{children}</button>;
 }
 
-class BtnThemClass extends React.Component {
+/*class BtnThemClass extends React.Component {
 
    render() {
       const {children} = this.props
       return <ThemeContext.Consumer >
          {value => {
-            return <button style={value}>{children}</button>
+            return <button style={value}>{children}</button>s
          }}
       </ThemeContext.Consumer>
    }
+}*/
+
+//Synthaxe plus simple
+class BtnThemClass extends React.Component {
+   render() {
+      const { children } = this.props;
+      const { theme } = this.context;
+      return <button style={theme}>{children}</button>;
+   }
 }
+BtnThemClass.contextType = ThemeContext;
 
 function SearchBar() {
    return (
@@ -50,12 +64,42 @@ function SearchBar() {
    );
 }
 
+function ToolBar() {
+   return (
+      <div>
+         <SearchBar />
+         <BtnThemClass>Envoyer</BtnThemClass>
+      </div>
+   );
+}
+
+function ThemeSwitcher() {
+   const { toggleTheme } = React.useContext(ThemeContext);
+   return <button onClick={toggleTheme}>Alterner thème</button>;
+}
+
 function Form() {
+   const [theme, setTheme] = React.useState("dark");
+
+   const toggleTheme = React.useCallback(function (e) {
+      e.preventDefault();
+      setTheme((t) => (t === "light" ? "dark" : "light"));
+   }, []);
+   const value = React.useMemo(
+      function () {
+         return {
+            theme: theme === "light" ? THEMES.light : THEMES.dark,
+            toggleTheme,
+         };
+      },
+      [theme, toggleTheme]
+   );
+
    return (
       <form>
-         <ThemeContext.Provider value={theme.light}>
-            <SearchBar />
-            <BtnThemClass>Envoyer</BtnThemClass>
+         <ThemeContext.Provider value={value}>
+            <ToolBar />
+            <ThemeSwitcher />
          </ThemeContext.Provider>
       </form>
    );

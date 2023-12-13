@@ -1,8 +1,9 @@
 const FormContext = React.createContext({})
 
 function Form({ defaultValue, onSubmit, children }) {
+    const [data, setData] = React.useState(defaultValue)
 
-    return <FormContext.Provider value={defaultValue}>
+    return <FormContext.Provider value={data}>
         <form onSubmit={onSubmit}>
             {children}
         </form>
@@ -14,7 +15,7 @@ function FormField({ name, children }) {
 
     return <React.Fragment>
         <label htmlFor={name}>{children}</label>
-        <input type="text" name={name} id={name} defaultValue={data[name]}/>
+        <input type="text" name={name} id={name} value={data[name]}/>
     </React.Fragment>
 }
 
@@ -27,7 +28,7 @@ function App() {
     const handleSubmit = React.useCallback(
         (value) => {
             value.preventDefault()
-            console.log(value.target)
+            console.log(value)
         },
         [],
     )
