@@ -36,6 +36,7 @@ function App() {
   const [tweets, setTweets] = useState(defaultData)
 
   const [modalIsVisible, setModalIsVisible] = useState(false)
+  const [currentTweet, setCurrentTweet] = useState({})
 
   const newTweetRef = useRef(null)
 
@@ -66,21 +67,14 @@ function App() {
     setTweets([...tweets])
   }
 
-  const handleClose = (close) => {
-    setModalIsVisible(close)
-  }
-
-  const toggleModalVisibility = () => {
-    setModalIsVisible(!modalIsVisible)
+  const handleClose = () => {
+    setModalIsVisible(false)
   }
 
   const handleModalVisible = (id)  => {
-    toggleModalVisibility()
-    tweets.map((tweet) => {
-      if (tweet.id === id) {
-        console.log(id)
-      }
-    })
+    const tweetData = tweets.find(tweet => tweet.id === id)
+    setCurrentTweet({...tweetData})
+    setModalIsVisible(true)
   }
 
   return <div className="container">
@@ -102,7 +96,7 @@ function App() {
     <div className="row">
       {tweets.map(tweet => <Tweet key={tweet.id} id={tweet.id} name={tweet.name} content={tweet.content} like={tweet.like} onDelete={handleDelete} onAddLike={handleAddLike} onModalVisible={handleModalVisible}/>)}
     </div>
-    {modalIsVisible && <UpdateTweetModal isVisible={handleClose}  />}
+    {modalIsVisible && <UpdateTweetModal isVisible={handleClose} currentTweet={currentTweet} />}
   </div>
 }
 
