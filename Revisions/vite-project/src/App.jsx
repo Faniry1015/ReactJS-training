@@ -77,6 +77,18 @@ function App() {
     setModalIsVisible(true)
   }
 
+  const handleSubmitUpdate = (updatedTweet) => {
+    const updatedTweets = tweets.map((tweet) => {
+      if (updatedTweet.id === tweet.id) {
+        return updatedTweet
+      } else {
+        return tweet
+      }
+    })
+    setTweets([...updatedTweets])
+    setModalIsVisible(false)
+  }
+
   return <div className="container">
     <form ref={newTweetRef} onSubmit={handleSubmit} style={{ maxWidth: '300px' }} >
       <h3>Nouveau tweet</h3>
@@ -96,7 +108,7 @@ function App() {
     <div className="row">
       {tweets.map(tweet => <Tweet key={tweet.id} id={tweet.id} name={tweet.name} content={tweet.content} like={tweet.like} onDelete={handleDelete} onAddLike={handleAddLike} onModalVisible={handleModalVisible}/>)}
     </div>
-    {modalIsVisible && <UpdateTweetModal isVisible={handleClose} currentTweet={currentTweet} />}
+    {modalIsVisible && <UpdateTweetModal isVisible={handleClose} currentTweet={currentTweet} onSubmitUpdate={handleSubmitUpdate} />}
   </div>
 }
 

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-export function UpdateTweetModal({ isVisible,currentTweet }) {
+export function UpdateTweetModal({ isVisible,currentTweet, onSubmitUpdate }) {
     const [tweet, setTweets] = useState(currentTweet)
     const updateTweetRef = useRef(null)
 
@@ -11,8 +11,9 @@ export function UpdateTweetModal({ isVisible,currentTweet }) {
             setTweets(updatedTweet)
     }
 
-    const handleSubmit = () => {
-        
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        onSubmitUpdate(tweet)
     }
     const { id, name, content } = tweet
 
