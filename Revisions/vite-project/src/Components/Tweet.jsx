@@ -1,7 +1,7 @@
 import React from 'react'
 import '../Styles/Tweet.css'
 
-export function Tweet({ id, name, content, like, onDelete, onAddLike, onUpdate }) {
+export function Tweet({ id, name, content, like, onDelete, onAddLike, onModalVisible }) {
 
     const deleteTweet = () => {
         onDelete(id)
@@ -11,8 +11,8 @@ export function Tweet({ id, name, content, like, onDelete, onAddLike, onUpdate }
         onAddLike(id)
     }
 
-    const update = () => {
-        onUpdate(id)
+    const modalVisible = () => {
+        onModalVisible(id)
     }
     return (
         <div className="col-sm-6 mb-3">
@@ -21,7 +21,7 @@ export function Tweet({ id, name, content, like, onDelete, onAddLike, onUpdate }
                     <h5 className="card-title">{name}</h5>
                     <p className="card-text">{content}</p>
                     <button onClick={AddLike} className="btn">❤️ {like}</button>
-                    <button onClick={update} className="btn btn-secondary"> Modifier</button>
+                    <button onClick={modalVisible} className="btn btn-secondary"> Modifier</button>
                     <button onClick={deleteTweet} type="button" className="btn-close" aria-label="Close"></button>
                 </div>
             </div>

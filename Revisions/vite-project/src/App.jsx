@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
 import Tweet from "./Components/Tweet";
+import { UpdateTweetModal } from "./Components/UpdateTweetModal";
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
 
   const [tweets, setTweets] = useState(defaultData)
 
+  const [modalIsVisible, setModalIsVisible] = useState(false)
+
   const newTweetRef = useRef(null)
 
   const handleDelete = (id) => {
@@ -62,7 +66,16 @@ function App() {
     setTweets([...tweets])
   }
 
-  const handleUpdate = (id)  => {
+  const handleClose = (close) => {
+    setModalIsVisible(close)
+  }
+
+  const toggleModalVisibility = () => {
+    setModalIsVisible(!modalIsVisible)
+  }
+
+  const handleModalVisible = (id)  => {
+    toggleModalVisibility()
     tweets.map((tweet) => {
       if (tweet.id === id) {
         console.log(id)
@@ -87,8 +100,9 @@ function App() {
     <hr />
 
     <div className="row">
-      {tweets.map(tweet => <Tweet key={tweet.id} id={tweet.id} name={tweet.name} content={tweet.content} like={tweet.like} onDelete={handleDelete} onAddLike={handleAddLike} onUpdate={handleUpdate}/>)}
+      {tweets.map(tweet => <Tweet key={tweet.id} id={tweet.id} name={tweet.name} content={tweet.content} like={tweet.like} onDelete={handleDelete} onAddLike={handleAddLike} onModalVisible={handleModalVisible}/>)}
     </div>
+    {modalIsVisible && <UpdateTweetModal isVisible={handleClose}  />}
   </div>
 }
 
