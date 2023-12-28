@@ -56,6 +56,7 @@ function App() {
       newTweet[key] = value
     })
     setTweets([...tweets, newTweet])
+    newTweetRef.current.reset()
   }
 
   const handleAddLike = (tweetId) => {
