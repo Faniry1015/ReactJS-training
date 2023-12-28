@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import Tweet from "./Components/Tweet";
 import { UpdateTweetModal } from "./Components/UpdateTweetModal";
+import { AddTweet } from "./Components/AddTweet";
 
 
 function App() {
@@ -38,43 +39,33 @@ function App() {
   const [modalIsVisible, setModalIsVisible] = useState(false)
   const [currentTweet, setCurrentTweet] = useState({})
 
-  const newTweetRef = useRef(null)
-
   const handleDelete = (id) => {
     const currentTweets = tweets.filter(tweet => tweet.id !== id)
     setTweets(currentTweets)
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const newTweet = {
+  const handleNewTweet = (newTweet) => {
+    const tweet = {
       id: tweets.length + 1,
       like: 0,
+      ...newTweet
     }
-    const newTweetData = new FormData(newTweetRef.current)
-    newTweetData.forEach((value, key) => {
-      newTweet[key] = value
-    })
-    setTweets([...tweets, newTweet])
-    newTweetRef.current.reset()
+    setTweets([...tweets, tweet])
   }
 
   const handleAddLike = (tweetId) => {
-    tweets.map((tweet) => {
-      if (tweet.id === tweetId) {
-        tweet.like +=1
-      }
-    })
+    const likedTweet = tweets.find((tweet) => tweet.id === tweetId)
+    likedTweet.like += 1
     setTweets([...tweets])
   }
 
-  const handleClose = () => {
+  const handleCloseModal = () => {
     setModalIsVisible(false)
   }
 
-  const handleModalVisible = (id)  => {
+  const handleModalVisible = (id) => {
     const tweetData = tweets.find(tweet => tweet.id === id)
-    setCurrentTweet({...tweetData})
+    setCurrentTweet({ ...tweetData })
     setModalIsVisible(true)
   }
 
@@ -91,25 +82,12 @@ function App() {
   }
 
   return <div className="container">
-    <form ref={newTweetRef} onSubmit={handleSubmit} style={{ maxWidth: '300px' }} >
-      <h3>Nouveau tweet</h3>
-      <div className="mb-3">
-        <label htmlFor="name" className="form-label">Nom</label>
-        <input type="text" className="form-control" id="name" name="name" aria-label="nom" required />
-      </div>
-      <div className="mb-3">
-        <label htmlFor="content" className="form-label">Message</label>
-        <textarea type="text" rows={3} className="form-control" id="content" name="content" required />
-      </div>
-      <button type="submit" className="btn btn-primary">Submit</button>
-    </form>
-
+    <AddTweet onNewTweet={handleNewTweet} />
     <hr />
-
     <div className="row">
-      {tweets.map(tweet => <Tweet key={tweet.id} id={tweet.id} name={tweet.name} content={tweet.content} like={tweet.like} onDelete={handleDelete} onAddLike={handleAddLike} onModalVisible={handleModalVisible}/>)}
+      {tweets.map(tweet => <Tweet key={tweet.id} tweet={tweet} onDelete={handleDelete} onAddLike={handleAddLike} onModalVisible={handleModalVisible} />)}
     </div>
-    {modalIsVisible && <UpdateTweetModal isVisible={handleClose} currentTweet={currentTweet} onSubmitUpdate={handleSubmitUpdate} />}
+    {modalIsVisible && <UpdateTweetModal isVisible={handleCloseModal} currentTweet={currentTweet} onSubmitUpdate={handleSubmitUpdate} />}
   </div>
 }
 

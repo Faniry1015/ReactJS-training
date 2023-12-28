@@ -1,7 +1,7 @@
 import React from 'react'
 import '../Styles/Tweet.css'
 
-export function Tweet({ id, name, content, like, onDelete, onAddLike, onModalVisible }) {
+export function Tweet({ tweet, onDelete, onAddLike, onModalVisible }) {
 
     const deleteTweet = () => {
         onDelete(id)
@@ -14,6 +14,8 @@ export function Tweet({ id, name, content, like, onDelete, onAddLike, onModalVis
     const modalVisible = () => {
         onModalVisible(id)
     }
+    
+    const {id, content, name, like } = tweet
     return (
         <div className="col-sm-6 mb-3">
             <div className="card" >
