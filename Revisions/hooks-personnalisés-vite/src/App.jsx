@@ -1,22 +1,57 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-function useCont (initialValue = 0, step = 1) {
-  const [count, setCount] = useState(initialValue)
+function useFetch(url) {
+  const [state, setState] = useState({
+    loading: true,
+    items: []
+  })
 
-  const increment = () => {
-    setCount(c => c + step)
-  }
+  useEffect(() => {
+    (async () => {
+      const response = await fetch(url)
+      if (response.ok) {
+        setState({
+          items: await response.json(),
+          loading: false
+        })
+      }
+    })()
+  }, [])
 
-  return [count, increment]
+
+  return [state.loading, state.items]
 }
 
 function App() {
 
-  const [count, increment] = useCont(10)
+  const [loading, items] = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
+  console.log(items)
+
+  if (loading) {
+    return (
+      <div>Chargement...</div>
+    )
+  }
 
   return (
     <div>
-        <button onClick={increment}>Incrémenter: {count}</button>
+      <table>
+        <thead>
+          <tr>
+            <th>UserId</th>
+            <th>Title</th>
+            <th>Body</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map(item => <tr>
+            <td>{item.userId}</td>
+            <td>{item.title}</td>
+            <td>{item.body}</td>
+          </tr>)}
+        </tbody>
+      </table>
+
     </div>
   )
 }
