@@ -8,12 +8,16 @@ function useFetch(url) {
 
   useEffect(() => {
     (async () => {
-      const response = await fetch(url)
-      if (response.ok) {
-        setState({
-          items: await response.json(),
-          loading: false
-        })
+      try {
+        const response = await fetch(url)
+        if (response.ok) {
+          setState({
+            items: await response.json(),
+            loading: false
+          })
+        }
+      } catch(e) {
+        console.error('Erreur de chargement des données', {message: e})
       }
     })()
   }, [])
@@ -24,8 +28,7 @@ function useFetch(url) {
 
 function App() {
 
-  const [loading, items] = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
-  console.log(items)
+  const [loading, items] = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=15')
 
   if (loading) {
     return (
@@ -44,7 +47,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {items.map(item => <tr>
+          {items.map(item => <tr key={item.id}>
             <td>{item.userId}</td>
             <td>{item.title}</td>
             <td>{item.body}</td>
