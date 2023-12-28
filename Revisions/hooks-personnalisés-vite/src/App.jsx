@@ -17,7 +17,8 @@ function useFetch(url) {
           })
         }
       } catch(e) {
-        console.error('Erreur de chargement des données', {message: e})
+        console.error( e.message)
+        setState(s => ({...s, loading: false}))
       }
     })()
   }, [])
@@ -28,7 +29,7 @@ function useFetch(url) {
 
 function App() {
 
-  const [loading, items] = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=15')
+  const [loading, items] = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
 
   if (loading) {
     return (
