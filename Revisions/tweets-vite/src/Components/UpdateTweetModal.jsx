@@ -15,7 +15,7 @@ export function UpdateTweetModal({ isVisible,currentTweet, onSubmitUpdate }) {
         e.preventDefault()
         onSubmitUpdate(tweet)
     }
-    const { id, name, content } = tweet
+    const { name, content } = tweet
 
     return createPortal(
         <div className='fixed-top z-2  vh-100 d-flex align-items-center justify-content-center'>
