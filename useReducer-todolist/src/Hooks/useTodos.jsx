@@ -1,4 +1,6 @@
-export function reducer(state, action) {
+import { useReducer } from "react"
+
+function todosReducer(state, action) {
     switch (action.type) {
       case 'REMOVE':
         return { ...state, todos: state.todos.filter(todo => todo.id !== action.payload.id) }
@@ -28,3 +30,29 @@ export function reducer(state, action) {
         return {...state, showCompleted : !state.showCompleted}
     }
   }
+
+export function useTodos() {
+
+  const [state, dispatch] = useReducer(todosReducer, {
+    showCompleted: true,
+    todos: [
+      {
+        id: 0,
+        task: 'Tâche 1',
+        completed: false
+      }
+    ]
+  })
+
+  const visibleTodos =  state.showCompleted ? state.todos : state.todos.filter(todo => !todo.completed)
+
+  return {
+    visibleTodos: visibleTodos,
+    showCompleted: state.showCompleted,
+    addTodo: (todo) => dispatch({ type: 'ADD', payload: todo}),
+    removeTodo: (todo) => dispatch({type: 'REMOVE', payload: todo}),
+    toggleCompleted: (todo) => dispatch({type: 'TOGGLE_COMPLETED', payload: todo}),
+    UpdateTodo: (todo) => dispatch({type: 'UPDATE', payload: todo}), 
+    toggleShowCompleted:() => dispatch({type: 'TOGGLE_SHOW_COMPLETED'})
+  }
+}
