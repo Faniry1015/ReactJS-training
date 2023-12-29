@@ -22,8 +22,8 @@ function AddItemForm({onAddTodo}) {
         <div>
             <form ref={addTodoRef} onSubmit={handleAddTodo}>
                 <div className="mb-3">
-                    <label htmlFor="task" className="form-label">Nouvelle tâche</label>
-                    <input type="text" className="form-control" id="task" name="task" aria-label="nouvelle tâche" />
+                    <h4>Nouvelle tâche</h4>
+                    <input type="text" className="form-control" id="task" name="task" aria-label="nouvelle tâche" placeholder='Tâche...'/>
                 </div>
                 <button type="submit" className="btn btn-primary">Ajouter</button>
             </form>
