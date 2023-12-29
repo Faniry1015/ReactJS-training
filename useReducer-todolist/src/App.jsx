@@ -1,16 +1,24 @@
-import { useReducer, useState } from 'react'
+import { useReducer } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import TodoItem from './assets/Components/TodoItem'
+import TodoItem from './Components/TodoItem'
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'REMOVE':
+      return {...state, todos: state.todos.filter(todo =>  todo.id !== action.payload.id)} 
+    case 'TOGGLE_COMPLETED':
+      return {...state, todos: state.todos.map(todo =>  {
+        if (todo.id === action.payload.id) {
+          return {...todo, completed: !todo.completed }
+        } else {
+          return todo
+        }
+      })} 
+  }
+}
 
 function App() {
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'REMOVE':
-        return removeTodo()
-    }
-  }
 
   const [state, dispatch] = useReducer(reducer, {todos: [
     {
@@ -19,24 +27,18 @@ function App() {
       completed: false
     },
     {
-      id: 2,
+      id: 1,
       task: 'Aller au se coucher',
       completed: false
     },
   ]}  )
 
-  const removeTodo = () => {
-    return {
-      ...state, todos: state.todos.filter(todo => todo !== todo.payload )
-    }
-    
-  } 
-
   return (
     <div className='container'>
+    {JSON.stringify(state.todos)}
     <h1>Todo list with useReducer</h1>
       <ul className="list-group">
-        {todos.map(todo => <TodoItem todo={todo} onRemove={() => dispatch({type: 'REMOVE'})} />)}
+        {state.todos.map(todo => <TodoItem key={todo.id} todo={todo} onRemove={() => dispatch({type: 'REMOVE', payload: todo})} onToggleCompleted={() => dispatch({type: 'TOGGLE_COMPLETED', payload: todo})} />)}
       </ul>
     </div>
   )
