@@ -1,11 +1,11 @@
 import React from 'react'
 
-function TodoItem({ todo, completed, onRemove, onToggleCompleted, onUpdate }) {
+function TodoItem({ todo, onRemove, onToggleCompleted, onUpdate }) {
     return (
         <li className='list-unstyled'>
             <div className="input-group mb-3">
                 <div className="input-group-text">
-                    <input className="form-check-input mt-0" type="checkbox" value={completed} onChange={onToggleCompleted} aria-label="Checkbox for following text input" />
+                    <input className="form-check-input mt-0" type="checkbox" checked={todo.completed} onChange={onToggleCompleted} aria-label="Checkbox for following text input" />
                 </div>
                 <div className="input-group-text">
                     {todo.task}

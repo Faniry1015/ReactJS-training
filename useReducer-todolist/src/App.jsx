@@ -31,7 +31,7 @@ function App() {
   return (
     <div className='container'>
     {JSON.stringify(state)}
-      <h1 className='text-center'>Todo list with useReducer</h1>
+      <h1 className='text-center'>Gestionnaire de tâches</h1>
       <AddItemForm onAddTodo={(todo) => dispatch({ type: 'ADD', payload: todo })} />
       <hr />
       <h4>Liste des tâches</h4>
