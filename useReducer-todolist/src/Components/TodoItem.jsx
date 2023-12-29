@@ -1,6 +1,6 @@
 import React from 'react'
 
-function TodoItem({ todo, completed, onRemove, onToggleCompleted }) {
+function TodoItem({ todo, completed, onRemove, onToggleCompleted, onUpdate }) {
     return (
         <li className='list-unstyled'>
             <div className="input-group mb-3">
@@ -10,7 +10,8 @@ function TodoItem({ todo, completed, onRemove, onToggleCompleted }) {
                 <div className="input-group-text">
                     {todo.task}
                 </div>
-                <button onClick={onRemove} className="btn btn-secondary">Effacer</button>
+                <button onClick={onUpdate} className="btn btn-warning">Modifier</button>
+                <button onClick={onRemove} className="btn btn-danger">Effacer</button>
             </div>
         </li>
     )
