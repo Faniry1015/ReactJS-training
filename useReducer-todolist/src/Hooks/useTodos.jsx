@@ -1,4 +1,4 @@
-import { useReducer } from "react"
+import { useCallback, useReducer } from "react"
 
 function todosReducer(state, action) {
     switch (action.type) {
@@ -49,10 +49,10 @@ export function useTodos() {
   return {
     visibleTodos: visibleTodos,
     showCompleted: state.showCompleted,
-    addTodo: (todo) => dispatch({ type: 'ADD', payload: todo}),
-    removeTodo: (todo) => dispatch({type: 'REMOVE', payload: todo}),
-    toggleCompleted: (todo) => dispatch({type: 'TOGGLE_COMPLETED', payload: todo}),
-    UpdateTodo: (todo) => dispatch({type: 'UPDATE', payload: todo}), 
-    toggleShowCompleted:() => dispatch({type: 'TOGGLE_SHOW_COMPLETED'})
+    addTodo: useCallback((todo) => dispatch({ type: 'ADD', payload: todo}), []) ,
+    removeTodo: useCallback((todo) => dispatch({type: 'REMOVE', payload: todo}), []),
+    toggleCompleted: useCallback((todo) => dispatch({type: 'TOGGLE_COMPLETED', payload: todo}), []),
+    UpdateTodo: useCallback((todo) => dispatch({type: 'UPDATE', payload: todo}), []), 
+    toggleShowCompleted:useCallback(() => dispatch({type: 'TOGGLE_SHOW_COMPLETED'}), [])
   }
 }

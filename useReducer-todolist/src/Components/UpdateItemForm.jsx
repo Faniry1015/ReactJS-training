@@ -22,7 +22,7 @@ function UpdateItemForm({ toUpdate, onCloseUpdateForm, onSubmitUpdate }) {
     return createPortal(
         <div className="position-fixed top-0 container d-flex align-items-center justify-content-center vh-100 z-2">
             <div className='bg-info p-4 w-50 position-relative'>
-                <button type="button" onClick={onCloseUpdateForm} class="btn-close position-absolute top-0 end-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" onClick={onCloseUpdateForm} className="btn-close position-absolute top-0 end-0" data-bs-dismiss="modal" aria-label="Close"></button>
 
                 <form ref={updateTodoRef} onSubmit={handleSubmitUpdate}>
                     <div className="mb-3">
