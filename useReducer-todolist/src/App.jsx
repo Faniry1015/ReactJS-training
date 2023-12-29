@@ -2,6 +2,7 @@ import { useReducer } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import TodoItem from './Components/TodoItem'
+import AddItemForm from './Components/AddItemForm'
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -37,6 +38,9 @@ function App() {
     <div className='container'>
     {JSON.stringify(state.todos)}
     <h1>Todo list with useReducer</h1>
+    <h2>Add new todo</h2>
+    <AddItemForm />
+    <h2>List</h2>
       <ul className="list-group">
         {state.todos.map(todo => <TodoItem key={todo.id} todo={todo} onRemove={() => dispatch({type: 'REMOVE', payload: todo})} onToggleCompleted={() => dispatch({type: 'TOGGLE_COMPLETED', payload: todo})} />)}
       </ul>
