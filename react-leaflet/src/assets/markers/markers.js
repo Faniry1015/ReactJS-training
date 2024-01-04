@@ -12,11 +12,11 @@ export const markers = [
     {
         name: 'CFFAMMA',
         position: [-19.870706531302478, 47.01978684930045],
-        icon: 'organismeR',
+        icon: 'orgRat',
     },
     {
         name: 'VakCenter',
         position: [-19.725, 46.835],
-        icon: 'organismeR',
+        icon: 'orgRat',
     },
 ]

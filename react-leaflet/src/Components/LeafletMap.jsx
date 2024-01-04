@@ -1,27 +1,22 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React from 'react';
 import 'leaflet/dist/leaflet.css';
 import '../styles/LeafletMap.css'
 import { MapContainer } from 'react-leaflet/MapContainer'
-import { TileLayer } from 'react-leaflet/TileLayer'
-import { useMap } from 'react-leaflet/hooks'
 import { Marker, Popup, GeoJSON } from 'react-leaflet';
 import distsVak from '../assets/map/districtsVak.geo.json'
-import homeIc from '../assets/icons/home.png';
-import planeIc from '../assets/icons/plane.png';
 import { markers } from '../assets/markers/markers';
-import { Icon } from 'leaflet';
+import { divIcon, point } from 'leaflet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
+import { homeIcon, planeIcon, orgRatIcon } from '../mapFunc/mapIcons.jsx'
+import { TroubleshootRounded } from '@mui/icons-material';
 
 export const LeafletMap = () => {
 
-  const homeIcon = new Icon({
-    iconUrl: homeIc,
-    iconSize: [30, 30]
-  })
+  const maxBounds = [
+    [-20.34, 45.64], // Coordonnée Sud-Ouest
+    [-19.02, 48.14]  // Coordonnée Nord-Est
+  ];
 
-  const planeIcon = new Icon({
-    iconUrl: planeIc,
-    iconSize: [30, 30]
-  })
 
   const handleIcon = (marker) => {
     switch (marker.icon) {
@@ -29,6 +24,8 @@ export const LeafletMap = () => {
         return homeIcon
       case 'plane':
         return planeIcon
+      case 'orgRat':
+        return orgRatIcon
       default:
         return homeIcon
     }
@@ -39,17 +36,28 @@ export const LeafletMap = () => {
     layer.bindPopup(distName)
   }
 
+  const createCustomClusterIcon = (cluster) => {
+    return new divIcon({
+      html:`<div class="cluster-icon">${cluster.getChildCount()}</div>`,
+      className: "custom-marker-cluster",
+      iconSize: point(33, 33, true)
+    })
+  }
+
   return (
     <div>
-      <MapContainer center={[-19.725, 46.835]} zoom={8} scrollWheelZoom={false} >
+      <MapContainer center={[-19.725, 46.835]} zoom={9} maxZoom={18} scrollWheelZoom={false} maxBounds={maxBounds}
+        maxBoundsViscosity={0.80} >
         <GeoJSON data={distsVak.features} onEachFeature={onEachDistrict} />
-        {markers.map((marker) => {
-          return <Marker key={markers.indexOf(marker)} position={marker.position} icon={handleIcon(marker)} >
-            <Popup>
-              {marker.name}
-            </Popup>
-          </Marker>
-        })}
+        <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon} >
+          {markers.map((marker) => {
+            return <Marker key={markers.indexOf(marker)} position={marker.position} icon={handleIcon(marker)} >
+              <Popup>
+                {marker.name}
+              </Popup>
+            </Marker>
+          })}
+        </MarkerClusterGroup>
       </MapContainer>
     </div>
   );
