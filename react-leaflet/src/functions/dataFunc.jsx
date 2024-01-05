@@ -2,7 +2,7 @@ import { stakeholdersData } from "../assets/data/stakeholdersData"
 
 let communesStakeholders = {
     Antsirabe_I: {},
-    Antsirabe_II: {},
+    Antsirabe_II: {Ambano: 'SANUVA'},
     Betafo: {},
     Mandoto: {},
     Faratsiho: {},
@@ -13,16 +13,13 @@ let communesStakeholders = {
     Object.entries(stakeholders).forEach(([stakeholder, info]) => {
         Object.entries(info.districts).forEach(([district, communes]) => {
             communes.map(commune => {
-                if (!communesStakeholders[district][commune]) {
-                    const currentDistrict = communesStakeholders[district]
-                    console.log(currentDistrict)
-                    // const currentCommune = currentDistrict[commune]
-                    // communesStakeholders = {...communesStakeholders, [district] : {...currentDistrict, }}
+                const currentDistrict= communesStakeholders[district]
+                const currentCommune = currentDistrict[commune]
+                if (!currentCommune) {
+                    communesStakeholders = {...communesStakeholders, [district]: {...currentDistrict, [commune] : [stakeholder]} }
+                } else {
+                    communesStakeholders = {...communesStakeholders, [district]: {...currentDistrict, [commune] : [...currentCommune, stakeholder]} }
                 }
-                // } else {
-                //     const currentZone = zoneIntervenant[zone]
-                //     zoneIntervenant = {...zoneIntervenant, [zone]: [...currentZone, key]}
-                // }
             })
         })
     })
