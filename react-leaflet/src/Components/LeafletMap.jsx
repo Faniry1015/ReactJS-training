@@ -3,18 +3,19 @@ import 'leaflet/dist/leaflet.css';
 import '../styles/LeafletMap.css'
 import { MapContainer } from 'react-leaflet/MapContainer'
 import { Marker, Popup, GeoJSON, TileLayer, useMap, useMapEvents } from 'react-leaflet';
-import distsVak from '../assets/map/districtsVak.geo.json'
+import communeVakMap from '../assets/map/communeVak.geo.json'
 import { markers } from '../assets/markers/markers';
 import { divIcon, point } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { homeIcon, planeIcon, orgRatIcon } from '../mapFunc/mapIcons.jsx'
 import { Box, Button } from '@mui/material';
 import { LocationMarker } from './LocationMarker.jsx';
-import { interventionZone } from '../assets/markers/interventionZone.jsx';
+import { stakeholdersData } from '../assets/data/stakeholdersData.jsx';
+import { stakeholdersPerCommune } from '../functions/dataFunc.jsx';
 
 export const LeafletMap = () => {
   const projectList = []
-  Object.entries(interventionZone).forEach(([key, value]) => {
+  Object.entries(stakeholdersData).forEach(([key, value]) => {
     projectList.push(key)
   })
 
@@ -53,26 +54,30 @@ export const LeafletMap = () => {
     const project = e.target.value
     setCurrentProjectZone({
       project: project,
-      zone: interventionZone[project],
-      index : ++index
+      zone: stakeholdersData[project],
+      index: ++index
     })
   }
 
-    const onEachDistrict = (district, layer) => {
-      const zone = district.properties.ADM2_EN;
-      if (currentProjectZone.zone.includes(zone)) {
-        layer.setStyle({ fillColor: 'green', fillOpacity: 0.7 });
-      } else {
-        layer.setStyle({ fillColor: 'grey', fillOpacity: 0.5 });
-      }
-      const distName = district.properties.ADM2_EN
-      // layer.bindPopup(distName)
-      layer.on({
-        click: () => {
-          setCurrentDistrict(distName);
-        },
-      });
+  const onEachDistrict = (district, layer) => {
+    const zone = district.properties.ADM2_EN;
+    if (currentProjectZone.zone.includes(zone)) {
+      layer.setStyle({ fillColor: 'green', fillOpacity: 0.7 });
+    } else {
+      layer.setStyle({ fillColor: 'grey', fillOpacity: 0.5 });
     }
+    const distName = district.properties.ADM2_EN
+    // layer.bindPopup(distName)
+    layer.on({
+      click: () => {
+        setCurrentDistrict(distName);
+      },
+    });
+  }
+
+  const heatMap = () => {
+
+  }
 
   const createCustomClusterIcon = (cluster) => {
     return new divIcon({
@@ -84,14 +89,15 @@ export const LeafletMap = () => {
 
   return (
     <Box>
-      {JSON.stringify(currentProjectZone)}
-      <Button onClick={handleResetMap}>Rétablir la carte</Button> <br />
+      {JSON.stringify(stakeholdersPerCommune)}
+      <Button onClick={handleResetMap}>Rétablir la carte</Button> <Button onClick={heatMap}>HeatMap des interventions</Button>
+      <br />
       {projectList.map((project) => {
         return <Button key={projectList.indexOf(project)} onClick={showInterventionZone} value={project}>{project}</Button>
       })}
       <MapContainer center={[-19.725, 46.835]} zoom={8} maxZoom={18} maxBounds={maxBounds}
         maxBoundsViscosity={0.80} ref={mapRef}>
-        <GeoJSON key={currentProjectZone.index} data={distsVak.features} onEachFeature={onEachDistrict} />
+        <GeoJSON key={currentProjectZone.index} data={communeVakMap.features} onEachFeature={onEachDistrict} />
         <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon} disableClusteringAtZoom={12}>
           {markers.map((marker) => {
             return <Marker key={markers.indexOf(marker)} position={marker.position} icon={handleIcon(marker)} >
