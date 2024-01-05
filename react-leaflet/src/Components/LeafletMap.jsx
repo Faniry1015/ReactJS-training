@@ -21,7 +21,8 @@ export const LeafletMap = () => {
   const [currentDistrict, setCurrentDistrict] = useState('')
   const [currentProjectZone, setCurrentProjectZone] = useState({
     project: 'all',
-    zone: ['Betafo', 'Antsirabe II', 'Antsirabe I', 'Faratsiho', 'Ambatolampy', 'Antanifotsy', 'Mandoto']
+    zone: ['Betafo', 'Antsirabe II', 'Antsirabe I', 'Faratsiho', 'Ambatolampy', 'Antanifotsy', 'Mandoto'],
+    index: 0
   })
   const mapRef = useRef(null)
 
@@ -48,10 +49,12 @@ export const LeafletMap = () => {
   }
 
   const showInterventionZone = (e) => {
+    let index = currentProjectZone.index
     const project = e.target.value
     setCurrentProjectZone({
       project: project,
-      zone: interventionZone[project]
+      zone: interventionZone[project],
+      index : ++index
     })
   }
 
@@ -88,7 +91,7 @@ export const LeafletMap = () => {
       })}
       <MapContainer center={[-19.725, 46.835]} zoom={8} maxZoom={18} maxBounds={maxBounds}
         maxBoundsViscosity={0.80} ref={mapRef}>
-        <GeoJSON data={distsVak.features} onEachFeature={onEachDistrict} />
+        <GeoJSON key={currentProjectZone.index} data={distsVak.features} onEachFeature={onEachDistrict} />
         <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon} disableClusteringAtZoom={12}>
           {markers.map((marker) => {
             return <Marker key={markers.indexOf(marker)} position={marker.position} icon={handleIcon(marker)} >
