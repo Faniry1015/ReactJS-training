@@ -22,3 +22,29 @@ const communesStakeholdersFunc = (stakeholders) => {
 };
 
 export const stakeholdersPerCommune = communesStakeholdersFunc(stakeholdersData)
+
+export let actualStakeholdersList = []
+
+for (const [stakeholder, info] of Object.entries(stakeholdersData)) {
+    const now = Date.now()
+    if (info.fin >= now ) {
+        actualStakeholdersList = [...actualStakeholdersList, stakeholder]
+    }
+}
+
+const actualStakeholdersFunc = (stakeholdersPerCommune, actualStakeholdersList) => {
+    let actualStakeholdersCommunes = {};
+  
+    for (const [district, communes] of Object.entries(stakeholdersPerCommune)) {
+        actualStakeholdersCommunes[district] = {}
+      for (const [commune, stakeholders] of Object.entries(communes)) {
+        const filteredStakeholders = stakeholders.filter(stakeholder => actualStakeholdersList.includes(stakeholder));
+        actualStakeholdersCommunes[district][commune] = filteredStakeholders
+      }
+    }
+  
+    return actualStakeholdersCommunes;
+  };
+
+  export const actualStakeholdersPerCommune = actualStakeholdersFunc(stakeholdersPerCommune, actualStakeholdersList)
+  

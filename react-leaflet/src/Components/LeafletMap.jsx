@@ -15,12 +15,13 @@ import { Box, Button } from '@mui/material';
 import { LocationMarker } from './LocationMarker.jsx';
 import { stakeholdersData } from '../assets/data/stakeholdersData.jsx';
 import { stakeholdersPerCommune } from '../functions/dataFunc.jsx';
+import { actualStakeholdersPerCommune } from '../functions/dataFunc.jsx';
 
 export const LeafletMap = () => {
 
   const [currentCommune, setCurrentCommune] = useState('')
   const [state, setState] = useState({
-    activeStakeholders: stakeholdersPerCommune,
+    activeStakeholders: actualStakeholdersPerCommune,
     refreshKey: 0
   })
   const { activeStakeholders, refreshKey } = state
@@ -55,14 +56,20 @@ export const LeafletMap = () => {
     setState({activeStakeholders: activeStakeholderCommune, refreshKey: ++currentRefreshKey})
 
   };
+
+  const heatMap = () => {
+
+  }
   
 
   const onEachCommune = (area, layer) => {
     const currentDistrict = area.properties.ADM2_EN
     const currentCommune = area.properties.ADM3_EN;
     const stakeholdersDistrict = activeStakeholders[currentDistrict]
+    console.log(activeStakeholders)
     if (stakeholdersDistrict && stakeholdersDistrict.hasOwnProperty(currentCommune) && stakeholdersDistrict[currentCommune].length > 0) {
-      layer.setStyle({ fillColor: 'green', fillOpacity: 0.7 });
+      console.log(activeStakeholders)
+      layer.setStyle({ fillColor: 'green', fillOpacity: 0.6 });
     }
     layer.bindPopup(currentCommune)
     layer.on({
@@ -72,22 +79,10 @@ export const LeafletMap = () => {
     });
   }
 
-  const heatMap = () => {
-
-  }
-
-  const createCustomClusterIcon = (cluster) => {
-    return new divIcon({
-      html: `<div class="cluster-icon">${cluster.getChildCount()}</div>`,
-      className: "custom-marker-cluster",
-      iconSize: point(33, 33, true)
-    })
-  }
-
   const { zoom, maxZoom, minZoom } = zoomParams
   return (
     <Box>
-      {JSON.stringify(stakeholdersPerCommune)}
+      {JSON.stringify(activeStakeholders)}
       <Button onClick={handleResetMap}>Rétablir la carte</Button> <Button onClick={heatMap}>HeatMap des interventions</Button>
       <br />
       {stakeholdersList.map((stakeholder) => {

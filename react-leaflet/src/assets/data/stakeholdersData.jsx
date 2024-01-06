@@ -1,4 +1,17 @@
 export const stakeholdersData = {
+    PAPAM: {
+        districts : {
+            Betafo : ['Inanantonana', 'Alakamisy Anativato', 'Belazao', 'Ambatonikolahy'],
+            Antsirabe_II : ['Ambano', 'Manandona', 'Andranomanelatra'],
+            Mandoto: ['Fidirana', 'Ankazomiriotra', 'Mandoto']
+        },
+        mise_en_oeuvre: ['Agrisud', 'AVSF', 'GSDM', 'APDRA'],
+        nature: 'projet',
+        bailleur: 'UE',
+        secteur: ['agriculture', 'elevage'],
+        debut: new Date(2017, 0 , 1),
+        fin: new Date(2022, 0 , 1),
+    } ,
     SANUVA: {
         districts : {
             Betafo : ['Inanantonana', 'Alakamisy Anativato', 'Belazao', 'Ambatonikolahy'],
