@@ -4,20 +4,35 @@ export const stakeholdersData = {
             Betafo : ['Inanantonana', 'Alakamisy Anativato', 'Belazao', 'Ambatonikolahy'],
             Antsirabe_II : ['Ambano', 'Manandona', 'Andranomanelatra']
         },
-        secteur: ['agriculture', 'elevage'] 
+        mise_en_oeuvre: ['Agrisud', 'AVSF', 'GSDM', 'APDRA'],
+        nature: 'projet',
+        bailleur: 'UE',
+        secteur: ['agriculture', 'elevage'],
+        debut: new Date(2021, 0 , 1),
+        fin: new Date(2025, 0 , 1),
     } ,
     BRECOMA: {
         districts : {
             Betafo : ['Belazao', 'Ambatonikolahy', 'Betafo'],
             Antsirabe_II : ['Ambohibary', 'Andranomanelatra']
         },
-        secteur : ['agriculture'] 
+        nature: 'projet',
+        bailleur: 'Fondation Bill Gates',
+        mise_en_oeuvre: ['ITA'],
+        secteur : ['agriculture'],
+        debut: new Date(2021, 0 , 1),
+        fin: new Date(2025, 0 , 1),
     } ,
     SHEP: {
         districts : {
             Antanifotsy : ['Antanifotsy', 'Belanitra'],
             Antsirabe_II : ['Ibity', 'Manandona', 'Andranomanelatra', 'Ambohidranandriana']
         },
-        secteur : ['agriculture', 'elevage'] 
+        nature: 'projet',
+        bailleur: 'JICA',
+        mise_en_oeuvre: ['MINAE'],
+        secteur : ['agriculture', 'elevage'],
+        debut: new Date(2023, 0 , 1),
+        fin: new Date(2026, 0 , 1),
     } ,
 }

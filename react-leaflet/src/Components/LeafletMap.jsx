@@ -8,69 +8,66 @@ import { markers } from '../assets/markers/markers';
 import { divIcon, point } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { homeIcon, planeIcon, orgRatIcon } from '../mapFunc/mapIcons.jsx'
+import { maxBounds } from '../assets/data/mapDefaultParams.jsx';
+import { mapCenter } from '../assets/data/mapDefaultParams.jsx';
+import { zoomParams } from '../assets/data/mapDefaultParams.jsx';
 import { Box, Button } from '@mui/material';
 import { LocationMarker } from './LocationMarker.jsx';
 import { stakeholdersData } from '../assets/data/stakeholdersData.jsx';
 import { stakeholdersPerCommune } from '../functions/dataFunc.jsx';
 
 export const LeafletMap = () => {
-  const projectList = []
-  Object.entries(stakeholdersData).forEach(([key, value]) => {
-    projectList.push(key)
-  })
 
-  const [currentDistrict, setCurrentDistrict] = useState('')
-  const [currentProjectZone, setCurrentProjectZone] = useState({
-    project: 'all',
-    zone: ['Betafo', 'Antsirabe II', 'Antsirabe I', 'Faratsiho', 'Ambatolampy', 'Antanifotsy', 'Mandoto'],
-    index: 0
+  const [currentCommune, setCurrentCommune] = useState('')
+  const [state, setState] = useState({
+    activeStakeholders: stakeholdersPerCommune,
+    refreshKey: 0
   })
+  const { activeStakeholders, refreshKey } = state
+
   const mapRef = useRef(null)
 
-  const maxBounds = [
-    [-20.34, 45.64], // Coordonnée Sud-Ouest
-    [-19.02, 48.14]  // Coordonnée Nord-Est
-  ];
   const handleResetMap = () => {
-    mapRef.current.setView([-19.725, 46.835], 8);
+    mapRef.current.setView(mapCenter, zoomParams.zoom);
   };
 
+  const stakeholdersList = []
+  for (const [key, value] of Object.entries(stakeholdersData)) {
+    stakeholdersList.push(key)
+  }
 
-  const handleIcon = (marker) => {
-    switch (marker.icon) {
-      case 'home':
-        return homeIcon
-      case 'plane':
-        return planeIcon
-      case 'orgRat':
-        return orgRatIcon
-      default:
-        return homeIcon
+  const showActiveStakeholderArea = (e) => {
+    const activeStakeholderCommune = {};
+    const stakeholderValue = e.target.value;
+  
+    for (const [district, communes] of Object.entries(stakeholdersPerCommune)) {
+      for (const [commune, stakeholders] of Object.entries(communes)) {
+        if (stakeholders.includes(stakeholderValue)) {
+          if (!activeStakeholderCommune[district]) {
+            activeStakeholderCommune[district] = {};
+          }
+  
+          activeStakeholderCommune[district][commune] = [...(activeStakeholderCommune[district][commune] || []), stakeholderValue];
+        }
+      }
     }
-  }
+    let currentRefreshKey = refreshKey
+    setState({activeStakeholders: activeStakeholderCommune, refreshKey: ++currentRefreshKey})
 
-  const showInterventionZone = (e) => {
-    let index = currentProjectZone.index
-    const project = e.target.value
-    setCurrentProjectZone({
-      project: project,
-      zone: stakeholdersData[project],
-      index: ++index
-    })
-  }
+  };
+  
 
-  const onEachDistrict = (district, layer) => {
-    const zone = district.properties.ADM2_EN;
-    if (currentProjectZone.zone.includes(zone)) {
+  const onEachCommune = (area, layer) => {
+    const currentDistrict = area.properties.ADM2_EN
+    const currentCommune = area.properties.ADM3_EN;
+    const stakeholdersDistrict = activeStakeholders[currentDistrict]
+    if (stakeholdersDistrict && stakeholdersDistrict.hasOwnProperty(currentCommune) && stakeholdersDistrict[currentCommune].length > 0) {
       layer.setStyle({ fillColor: 'green', fillOpacity: 0.7 });
-    } else {
-      layer.setStyle({ fillColor: 'grey', fillOpacity: 0.5 });
     }
-    const distName = district.properties.ADM2_EN
-    // layer.bindPopup(distName)
+    layer.bindPopup(currentCommune)
     layer.on({
       click: () => {
-        setCurrentDistrict(distName);
+        setCurrentCommune(currentCommune);
       },
     });
   }
@@ -87,27 +84,18 @@ export const LeafletMap = () => {
     })
   }
 
+  const { zoom, maxZoom, minZoom } = zoomParams
   return (
     <Box>
       {JSON.stringify(stakeholdersPerCommune)}
       <Button onClick={handleResetMap}>Rétablir la carte</Button> <Button onClick={heatMap}>HeatMap des interventions</Button>
       <br />
-      {projectList.map((project) => {
-        return <Button key={projectList.indexOf(project)} onClick={showInterventionZone} value={project}>{project}</Button>
+      {stakeholdersList.map((stakeholder) => {
+        return <Button key={stakeholdersList.indexOf(stakeholder)} onClick={showActiveStakeholderArea} value={stakeholder}>{stakeholder}</Button>
       })}
-      <MapContainer center={[-19.725, 46.835]} zoom={8} maxZoom={18} maxBounds={maxBounds}
+      <MapContainer center={mapCenter} zoom={zoom} maxZoom={maxZoom} minZoom={minZoom} maxBounds={maxBounds}
         maxBoundsViscosity={0.80} ref={mapRef}>
-        <GeoJSON key={currentProjectZone.index} data={communeVakMap.features} onEachFeature={onEachDistrict} />
-        <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon} disableClusteringAtZoom={12}>
-          {markers.map((marker) => {
-            return <Marker key={markers.indexOf(marker)} position={marker.position} icon={handleIcon(marker)} >
-              <Popup>
-                {marker.name}
-              </Popup>
-            </Marker>
-          })}
-          {/* <LocationMarker /> */}
-        </MarkerClusterGroup>
+        <GeoJSON key={refreshKey} data={communeVakMap.features} onEachFeature={onEachCommune} />
       </MapContainer>
     </Box>
   );
